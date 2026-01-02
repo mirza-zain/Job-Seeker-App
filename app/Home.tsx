@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
+import { router } from "expo-router"
 import { useMemo, useState } from "react"
 import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { router } from "expo-router"
 
 export default function Home() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -172,7 +172,7 @@ export default function Home() {
                 <TouchableOpacity 
                     activeOpacity={0.7}
                     onPress={() => router.push({
-                        pathname: '/job-detail',
+                        pathname: '/(tabs)/job-detail',
                         params: { job: JSON.stringify(item) }
                     })}
                     style={{

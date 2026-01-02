@@ -5,10 +5,10 @@ import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-nativ
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
+    name: 'Mirza Zain',
+    email: 'mirzazain269@gmail.com',
+    phone: '+92 315 0757174',
+    location: 'Karachi, Sindh',
     title: 'Software Engineer',
     bio: 'Passionate developer with 5 years of experience in mobile and web development.',
   });

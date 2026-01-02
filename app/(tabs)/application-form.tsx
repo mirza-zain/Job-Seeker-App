@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { useAppliedJobs } from './context/AppliedJobsContext';
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useAppliedJobs } from '../context/AppliedJobsContext';
 
 export default function ApplicationForm() {
   const params = useLocalSearchParams();

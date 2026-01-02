@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import { useAppliedJobs } from './context/AppliedJobsContext';
+import { router, useLocalSearchParams } from "expo-router";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useAppliedJobs } from '../context/AppliedJobsContext';
 
 export default function JobDetail() {
   const params = useLocalSearchParams();
@@ -135,7 +135,7 @@ export default function JobDetail() {
           activeOpacity={0.7}
           disabled={alreadyApplied}
           onPress={() => router.push({
-            pathname: '/application-form',
+            pathname: '/(tabs)/application-form',
             params: { job: JSON.stringify(job) }
           })}
           style={{

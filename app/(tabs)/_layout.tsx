@@ -5,14 +5,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: {
-          backgroundColor: '#3b82f6',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 20,
-        },
+        headerShown: false,
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#9ca3af',
         tabBarStyle: {
@@ -57,6 +50,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="job-detail"
+        options={{
+          href: null,
+          title: 'Job Details',
+        }}
+      />
+      <Tabs.Screen
+        name="application-form"
+        options={{
+          href: null,
+          title: 'Application Form',
         }}
       />
     </Tabs>
