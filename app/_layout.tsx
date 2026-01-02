@@ -1,24 +1,38 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AppliedJobsProvider } from './context/AppliedJobsContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <AppliedJobsProvider>
+          <Drawer
+            screenOptions={{
+              headerShown: false,
+              drawerStyle: {
+                backgroundColor: '#f9fafb',
+                width: 280,
+              },
+              drawerLabelStyle: {
+                fontSize: 16,
+                fontWeight: '500',
+              },
+            }}
+          >
+            <Drawer.Screen
+              name="(tabs)"
+              options={{
+                drawerLabel: 'Home',
+                title: '💼 Job Seeker',
+              }}
+            />
+          </Drawer>
+        </AppliedJobsProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
