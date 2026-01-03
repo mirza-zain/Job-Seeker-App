@@ -2,8 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppliedJobs, useDeleteApplication, useUpdateApplicationStatus } from '../../hooks/useAppliedJobs';
+import { getThemeColors } from '../../lib/theme';
+import { useAppSelector } from '../../state/store';
 
 export default function Applied() {
+  const mode = useAppSelector((s) => s.theme.mode);
+  const palette = getThemeColors(mode);
   const { data } = useAppliedJobs();
   const updateStatus = useUpdateApplicationStatus();
   const deleteApp = useDeleteApplication();
@@ -14,11 +18,11 @@ export default function Applied() {
     { key: 'rejected', label: 'Rejected', color: '#ef4444' },
   ];
   return (
-    <SafeAreaView style={styles.screen} edges={["top"]}>
-      <Text style={styles.heading}>Applied Jobs</Text>
+    <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
+      <Text style={[styles.heading, { color: palette.heading }]}>Applied Jobs</Text>
       {!data || data.length === 0 ? (
         <View style={styles.container}>
-          <Text style={styles.placeholder}>No jobs applied yet</Text>
+          <Text style={[styles.placeholder, { color: palette.mutedText }]}>No jobs applied yet</Text>
         </View>
       ) : (
         <FlatList
@@ -27,14 +31,14 @@ export default function Applied() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }] }>
               <View style={styles.cardHeader}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-                  {item.company ? <Text style={styles.company}>{item.company}</Text> : null}
+                  <Text style={[styles.title, { color: palette.text }]} numberOfLines={1}>{item.title}</Text>
+                  {item.company ? <Text style={[styles.company, { color: palette.mutedText }]}>{item.company}</Text> : null}
                 </View>
                 <TouchableOpacity
-                  style={styles.deleteBtn}
+                  style={[styles.deleteBtn, { backgroundColor: palette.card, borderColor: '#fee2e2' }]}
                   onPress={() => deleteApp.mutate(item.id)}
                   activeOpacity={0.8}
                 >
@@ -46,19 +50,19 @@ export default function Applied() {
                   <TouchableOpacity
                     key={s.key}
                     onPress={() => updateStatus.mutate({ id: item.id, status: s.key })}
-                    style={[styles.statusChip, { backgroundColor: item.status === s.key ? s.color : '#f3f4f6', borderColor: item.status === s.key ? s.color : '#e5e7eb' }]}
+                    style={[styles.statusChip, { backgroundColor: item.status === s.key ? s.color : (mode === 'dark' ? '#1f2937' : '#f3f4f6'), borderColor: item.status === s.key ? s.color : (mode === 'dark' ? '#374151' : '#e5e7eb') }]}
                   >
-                    <Text style={[styles.statusText, { color: item.status === s.key ? '#ffffff' : '#374151' }]}>{s.label}</Text>
+                    <Text style={[styles.statusText, { color: item.status === s.key ? '#ffffff' : palette.text }]}>{s.label}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
               <View style={styles.metaRow}>
-                {item.location ? <Text style={styles.meta}>📍 {item.location}</Text> : null}
-                {item.employment_type ? <Text style={styles.meta}>{item.employment_type}</Text> : null}
+                {item.location ? <Text style={[styles.meta, { color: palette.mutedText }]}>📍 {item.location}</Text> : null}
+                {item.employment_type ? <Text style={[styles.meta, { color: palette.mutedText }]}>{item.employment_type}</Text> : null}
               </View>
               {item.note ? (
-                <View style={styles.noteBox}>
-                  <Text style={styles.noteText}>{item.note}</Text>
+                <View style={[styles.noteBox, { backgroundColor: mode === 'dark' ? '#0f172a' : '#f3f4f6', borderColor: palette.border }]}>
+                  <Text style={[styles.noteText, { color: palette.text }]}>{item.note}</Text>
                 </View>
               ) : null}
             </View>
@@ -72,14 +76,12 @@ export default function Applied() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f9fafb',
     padding: 16,
     paddingTop: 24,
   },
   heading: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#111827',
     marginBottom: 16,
   },
   container: {
@@ -95,10 +97,8 @@ const styles = StyleSheet.create({
     height: 12,
   },
   card: {
-    backgroundColor: '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
     padding: 16,
   },
   cardHeader: {

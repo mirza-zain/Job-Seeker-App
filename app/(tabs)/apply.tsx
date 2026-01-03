@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useApplyToJob } from '../../hooks/useAppliedJobs';
+import { getThemeColors } from '../../lib/theme';
 import { useAppSelector } from '../../state/store';
 
 export const options = {
@@ -14,9 +15,7 @@ export default function ApplyScreen() {
   const parsedJob = job ? JSON.parse(String(job)) : null;
   const user = useAppSelector((s) => s.user);
   const themeMode = useAppSelector((s) => s.theme.mode);
-  const colors = themeMode === 'dark'
-    ? { background: '#0f172a', text: '#f8fafc', card: '#111827', border: '#374151', primary: '#3b82f6' }
-    : { background: '#f9fafb', text: '#111827', card: '#ffffff', border: '#e5e7eb', primary: '#3b82f6' };
+  const palette = getThemeColors(themeMode);
 
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
@@ -24,11 +23,11 @@ export default function ApplyScreen() {
   const [expectedSalary, setExpectedSalary] = useState('');
   const [error, setError] = useState<string | null>(null);
   const applyMutation = useApplyToJob();
-  const placeholderColor = themeMode === 'dark' ? '#ffffff' : '#6b7280';
+  const placeholderColor = themeMode === 'dark' ? '#CED3DA' : palette.mutedText;
 
   if (!parsedJob) {
     return (
-      <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+      <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
         <View style={styles.center}> 
           <Text style={[styles.error, { color: '#dc2626' }]}>No job data found.</Text>
         </View>
@@ -37,46 +36,46 @@ export default function ApplyScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
-      <Text style={[styles.heading, { color: colors.text }]}>Apply to {parsedJob.title}</Text>
+    <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
+      <Text style={[styles.heading, { color: palette.heading }]}>Apply to {parsedJob.title}</Text>
 
-      <View style={[styles.formCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <Text style={[styles.label, { color: colors.text }]}>Full Name</Text>
+      <View style={[styles.formCard, { backgroundColor: palette.card, borderColor: palette.border }]}>
+        <Text style={[styles.label, { color: palette.text }]}>Full Name</Text>
         <TextInput
           placeholder="Your full name"
           value={name}
           onChangeText={setName}
-          style={[styles.input, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
+          style={[styles.input, { borderColor: palette.border, color: palette.text, backgroundColor: palette.card }]}
           placeholderTextColor={placeholderColor}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Email</Text>
+        <Text style={[styles.label, { color: palette.text }]}>Email</Text>
         <TextInput
           placeholder="you@example.com"
           value={email}
           onChangeText={setEmail}
-          style={[styles.input, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
+          style={[styles.input, { borderColor: palette.border, color: palette.text, backgroundColor: palette.card }]}
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor={placeholderColor}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Cover Letter</Text>
+        <Text style={[styles.label, { color: palette.text }]}>Cover Letter</Text>
         <TextInput
           placeholder="Write a brief cover letter"
           value={note}
           onChangeText={setNote}
-          style={[styles.textarea, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
+          style={[styles.textarea, { borderColor: palette.border, color: palette.text, backgroundColor: palette.card }]}
           multiline
           placeholderTextColor={placeholderColor}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Expected Salary</Text>
+        <Text style={[styles.label, { color: palette.text }]}>Expected Salary</Text>
         <TextInput
           placeholder="Optional"
           value={expectedSalary}
           onChangeText={setExpectedSalary}
-          style={[styles.input, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
+          style={[styles.input, { borderColor: palette.border, color: palette.text, backgroundColor: palette.card }]}
           keyboardType="numeric"
           placeholderTextColor={placeholderColor}
         />
@@ -84,11 +83,11 @@ export default function ApplyScreen() {
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <View style={styles.actions}>
-          <TouchableOpacity style={[styles.cancelBtn, { borderColor: colors.border }]} onPress={() => router.back()}>
-            <Text style={[styles.cancelText, { color: colors.text }]}>Cancel</Text>
+          <TouchableOpacity style={[styles.cancelBtn, { borderColor: palette.border }]} onPress={() => router.back()}>
+            <Text style={[styles.cancelText, { color: palette.text }]}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.submitBtn, { backgroundColor: colors.primary }]}
+            style={[styles.submitBtn, { backgroundColor: palette.primary }]}
             onPress={async () => {
               if (!name.trim() || !email.trim()) {
                 setError('Name and email are required');

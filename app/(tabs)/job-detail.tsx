@@ -1,6 +1,8 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getThemeColors } from '../../lib/theme';
+import { useAppSelector } from '../../state/store';
 
 export const options = {
   href: null, // hide from tab bar / drawer
@@ -9,54 +11,59 @@ export const options = {
 export default function JobDetail() {
   const { job } = useLocalSearchParams();
   const parsedJob = job ? JSON.parse(String(job)) : null;
+  const mode = useAppSelector((s) => s.theme.mode);
+  const palette = getThemeColors(mode);
+  const successBg = mode === 'dark' ? 'rgba(34,197,94,0.15)' : '#f0fdf4';
+  const successBorder = mode === 'dark' ? 'rgba(34,197,94,0.30)' : '#bbf7d0';
+  const successText = mode === 'dark' ? '#86efac' : '#15803d';
 
   if (!parsedJob) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.error}>No job data found.</Text>
+      <View style={[styles.center, { backgroundColor: palette.background }]}>
+        <Text style={[styles.error, { color: mode === 'dark' ? '#fca5a5' : '#dc2626' }]}>No job data found.</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.screen} edges={["top"]}>
+    <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
     <ScrollView contentContainerStyle={styles.content}>
       {/* Header Card */}
-      <View style={styles.card}>
-        <Text style={styles.title} numberOfLines={2}>{parsedJob.title}</Text>
-        <Text style={styles.company}>{parsedJob.company}</Text>
+      <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }]}>
+        <Text style={[styles.title, { color: palette.heading }]} numberOfLines={2}>{parsedJob.title}</Text>
+        <Text style={[styles.company, { color: palette.mutedText }]}>{parsedJob.company}</Text>
 
         <View style={styles.badgeRow}>
-          <View style={[styles.chip, styles.chipNeutral]}>
-            <Text style={[styles.chipText, styles.chipNeutralText]} numberOfLines={1}>📍 {parsedJob.location || 'Unknown'}</Text>
+          <View style={[styles.chip, { backgroundColor: palette.card, borderColor: palette.border }]}>
+            <Text style={[styles.chipText, { color: palette.mutedText }]} numberOfLines={1}>📍 {parsedJob.location || 'Unknown'}</Text>
           </View>
-          <View style={[styles.chip, styles.chipPrimary]}>
-            <Text style={[styles.chipText, styles.chipPrimaryText]} numberOfLines={1}>{parsedJob.employment_type || 'Type N/A'}</Text>
+          <View style={[styles.chip, { backgroundColor: 'rgba(37, 99, 235, 0.12)', borderColor: 'rgba(37, 99, 235, 0.25)' }]}>
+            <Text style={[styles.chipText, { color: palette.primary }]} numberOfLines={1}>{parsedJob.employment_type || 'Type N/A'}</Text>
           </View>
           {parsedJob.job_category ? (
-            <View style={[styles.chip, styles.chipPurple]}>
-              <Text style={[styles.chipText, styles.chipPurpleText]} numberOfLines={1}>{parsedJob.job_category}</Text>
+            <View style={[styles.chip, { backgroundColor: 'rgba(37, 99, 235, 0.12)', borderColor: 'rgba(37, 99, 235, 0.25)' }]}>
+              <Text style={[styles.chipText, { color: palette.primary }]} numberOfLines={1}>{parsedJob.job_category}</Text>
             </View>
           ) : null}
         </View>
       </View>
 
       {/* Salary Card */}
-      <View style={styles.card}>
-        <Text style={styles.sectionHeading}>Salary</Text>
-        <View style={styles.salaryBox}>
-          <Text style={styles.salaryText}>${parsedJob.salary_from?.toLocaleString()} - ${parsedJob.salary_to?.toLocaleString()}</Text>
+      <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }]}>
+        <Text style={[styles.sectionHeading, { color: palette.heading }]}>Salary</Text>
+        <View style={[styles.salaryBox, { backgroundColor: successBg, borderColor: successBorder }]}>
+          <Text style={[styles.salaryText, { color: successText }]}>${parsedJob.salary_from?.toLocaleString()} - ${parsedJob.salary_to?.toLocaleString()}</Text>
         </View>
       </View>
 
       {/* Description Card */}
-      <View style={styles.card}>
-        <Text style={styles.sectionHeading}>Description</Text>
-        <Text style={styles.body}>{parsedJob.description || 'No description provided.'}</Text>
+      <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }]}>
+        <Text style={[styles.sectionHeading, { color: palette.heading }]}>Description</Text>
+        <Text style={[styles.body, { color: palette.text }]}>{parsedJob.description || 'No description provided.'}</Text>
       </View>
 
       {/* Apply CTA */}
-      <TouchableOpacity style={styles.applyButton} onPress={() => router.push({ pathname: '/(tabs)/apply', params: { job: JSON.stringify(parsedJob) } })}>
+      <TouchableOpacity style={[styles.applyButton, { backgroundColor: palette.primary }]} onPress={() => router.push({ pathname: '/(tabs)/apply', params: { job: JSON.stringify(parsedJob) } })}>
         <Text style={styles.applyText}>Apply</Text>
       </TouchableOpacity>
     </ScrollView>

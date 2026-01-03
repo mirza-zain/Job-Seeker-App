@@ -3,20 +3,24 @@ import { router } from "expo-router"
 import { useMemo } from "react"
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { getThemeColors } from "../../lib/theme"
+import { useAppSelector } from "../../state/store"
 
 export default function Home() {
+    const mode = useAppSelector((s) => s.theme.mode)
+    const palette = getThemeColors(mode)
     const {data, isLoading, error} = useQuery({
         queryKey: ["job"],
         queryFn: () => fetch("https://jsonfakery.com/jobs").then(res => res.json()),
     })
 
     if(isLoading) return (
-        <View style={styles.centerContainer}>
-            <Text style={styles.loadingText}>Loading jobs...</Text>
+        <View style={[styles.centerContainer, { backgroundColor: palette.background }]}>
+            <Text style={[styles.loadingText, { color: palette.mutedText }]}>Loading jobs...</Text>
         </View>
     )
     if(error) return (
-        <View style={styles.centerContainer}>
+        <View style={[styles.centerContainer, { backgroundColor: palette.background }]}>
             <Text style={styles.errorText}>Error: {(error as Error).message}</Text>
         </View>
     )
@@ -28,8 +32,8 @@ export default function Home() {
     }, [data])
 
     return (
-        <SafeAreaView style={styles.screen} edges={["top"]}>
-        <Text style={styles.heading}>Explore Jobs</Text>
+        <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
+        <Text style={[styles.heading, { color: palette.heading }]}>Explore Jobs</Text>
         <FlatList 
             data={filteredJobs}
             keyExtractor={item => item.id}
@@ -41,22 +45,22 @@ export default function Home() {
                     pathname: '/(tabs)/job-detail',
                     params: { job: JSON.stringify(item) }
                 })}
-                style={styles.jobCard}
+                style={[styles.jobCard, { backgroundColor: palette.card, borderColor: palette.border }]}
             >
                 <View style={styles.cardHeader}>
-                    <Text style={styles.jobTitle}>{item.title}</Text>
+                    <Text style={[styles.jobTitle, { color: palette.text }]}>{item.title}</Text>
                     <Text style={styles.salary}>${item.salary_from?.toLocaleString()}</Text>
                 </View>
                 
-                <Text style={styles.company}>{item.company}</Text>
+                <Text style={[styles.company, { color: palette.mutedText }]}>{item.company}</Text>
                 
                 <View style={styles.detailsRow}>
-                    <Text style={styles.location} numberOfLines={1}>📍 {item.location}</Text>
-                    <Text style={styles.type} numberOfLines={1}>{item.employment_type}</Text>
+                    <Text style={[styles.location, { color: palette.mutedText }]} numberOfLines={1}>📍 {item.location}</Text>
+                    <Text style={[styles.type, { backgroundColor: 'rgba(37, 99, 235, 0.12)', color: palette.primary, borderColor: 'rgba(37, 99, 235, 0.25)', borderWidth: 1 }]} numberOfLines={1}>{item.employment_type}</Text>
                 </View>
             </TouchableOpacity>
             }
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: palette.border }]} />}
             contentContainerStyle={styles.listContent}
                 />
         </SafeAreaView>
@@ -66,7 +70,6 @@ export default function Home() {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: '#f9fafb',
         padding: 16,
         paddingTop: 24
     },
@@ -87,15 +90,12 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#111827',
         marginBottom: 16
     },
     jobCard: {
-        backgroundColor: '#ffffff',
         borderRadius: 12,
         padding: 16,
         borderWidth: 1,
-        borderColor: '#e5e7eb',
         marginBottom: 12
     },
     cardHeader: {
@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     jobTitle: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#111827',
         flex: 1
     },
     salary: {
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
     },
     company: {
         fontSize: 14,
-        color: '#6b7280',
         marginBottom: 10
     },
     detailsRow: {
@@ -132,8 +130,6 @@ const styles = StyleSheet.create({
     },
     type: {
         fontSize: 12,
-        backgroundColor: '#dbeafe',
-        color: '#1e40af',
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 6,

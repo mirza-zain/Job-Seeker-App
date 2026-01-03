@@ -1,58 +1,62 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { getThemeColors } from '../lib/theme';
+import { useAppSelector } from '../state/store';
 
 export default function About() {
+  const mode = useAppSelector((s) => s.theme.mode);
+  const palette = getThemeColors(mode);
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: palette.background }]}>
       <View style={styles.header}>
-        <Ionicons name="information-circle" size={60} color="#3b82f6" />
-        <Text style={styles.title}>About Job Seeker</Text>
+        <Ionicons name="information-circle" size={60} color={palette.primary} />
+        <Text style={[styles.title, { color: palette.heading }]}>About Job Seeker</Text>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.description}>
+        <Text style={[styles.description, { color: palette.mutedText }]}>
           Job Seeker is a mobile application designed to help you discover, explore, and track job opportunities effortlessly.
         </Text>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>✨ Key Features</Text>
-          <Text style={styles.featureItem}>• Browse jobs from various industries</Text>
-          <Text style={styles.featureItem}>• View detailed job descriptions</Text>
-          <Text style={styles.featureItem}>• Track applied jobs easily</Text>
-          <Text style={styles.featureItem}>• Manage your job search progress</Text>
-          <Text style={styles.featureItem}>• Professional profile management</Text>
+        <View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}>
+          <Text style={[styles.sectionTitle, { color: palette.text }]}>✨ Key Features</Text>
+          <Text style={[styles.featureItem, { color: palette.mutedText }]}>• Browse jobs from various industries</Text>
+          <Text style={[styles.featureItem, { color: palette.mutedText }]}>• View detailed job descriptions</Text>
+          <Text style={[styles.featureItem, { color: palette.mutedText }]}>• Track applied jobs easily</Text>
+          <Text style={[styles.featureItem, { color: palette.mutedText }]}>• Manage your job search progress</Text>
+          <Text style={[styles.featureItem, { color: palette.mutedText }]}>• Professional profile management</Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎯 Our Mission</Text>
-          <Text style={styles.bodyText}>
+        <View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}>
+          <Text style={[styles.sectionTitle, { color: palette.text }]}>🎯 Our Mission</Text>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>
             We aim to simplify your job search journey by providing an intuitive platform where you can discover opportunities that match your skills and aspirations.
           </Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>💡 How It Works</Text>
-          <Text style={styles.bodyText}>
+        <View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}>
+          <Text style={[styles.sectionTitle, { color: palette.text }]}>💡 How It Works</Text>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>
             1. Browse through available job listings in the Home tab
           </Text>
-          <Text style={styles.bodyText}>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>
             2. Click on any job to view detailed information
           </Text>
-          <Text style={styles.bodyText}>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>
             3. Apply to jobs and track them in the Applied tab
           </Text>
-          <Text style={styles.bodyText}>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>
             4. Manage your profile and preferences in the Profile tab
           </Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📝 Version</Text>
-          <Text style={styles.bodyText}>Job Seeker v1.0.0</Text>
+        <View style={[styles.section, { backgroundColor: palette.card, borderColor: palette.border }]}>
+          <Text style={[styles.sectionTitle, { color: palette.text }]}>📝 Version</Text>
+          <Text style={[styles.bodyText, { color: palette.mutedText }]}>Job Seeker v1.0.0</Text>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Text style={[styles.footerText, { color: palette.mutedText }]}>
             Made with ❤️ for job seekers everywhere
           </Text>
         </View>
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9fafb',
   },
   header: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: 'transparent',
     padding: 30,
     alignItems: 'center',
     justifyContent: 'center',
@@ -93,7 +97,6 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 15,
     borderRadius: 12,
-    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.08)',
     elevation: 3,
   },
   sectionTitle: {
