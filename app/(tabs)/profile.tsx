@@ -1,279 +1,151 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAppDispatch, useAppSelector } from '../../state/store';
+import { toggleTheme } from '../../state/themeSlice';
 
 export default function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: 'Mirza Zain',
-    email: 'mirzazain269@gmail.com',
-    phone: '+92 315 0757174',
-    location: 'Karachi, Sindh',
-    title: 'Software Engineer',
-    bio: 'Passionate developer with 5 years of experience in mobile and web development.',
-  });
-
-  const ProfileField = ({ icon, label, value, onChangeText }: any) => (
-    <View style={{marginBottom: 20}}>
-      <Text style={{fontSize: 14, fontWeight: '600', color: '#6b7280', marginBottom: 8}}>
-        {label}
-      </Text>
-      <View style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: isEditing ? '#ffffff' : '#f9fafb',
-        padding: 16,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: isEditing ? '#3b82f6' : '#e5e7eb'
-      }}>
-        <Ionicons name={icon} size={20} color="#6b7280" style={{marginRight: 12}} />
-        {isEditing ? (
-          <TextInput
-            style={{flex: 1, fontSize: 16, color: '#111827'}}
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={label}
-          />
-        ) : (
-          <Text style={{flex: 1, fontSize: 16, color: '#111827'}}>
-            {value || 'Not set'}
-          </Text>
-        )}
-      </View>
-    </View>
-  );
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.user);
+  const themeMode = useAppSelector((s) => s.theme.mode);
+  const colors = themeMode === 'dark'
+    ? { background: '#0f172a', text: '#f8fafc', primary: '#60a5fa', card: '#111827', border: '#374151', muted: '#9ca3af' }
+    : { background: '#f9fafb', text: '#111827', primary: '#3b82f6', card: '#ffffff', border: '#e5e7eb', muted: '#6b7280' };
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: '#f9fafb'}}>
-      {/* Profile Header */}
-      <View style={{
-        backgroundColor: '#3b82f6',
-        paddingTop: 40,
-        paddingBottom: 80,
-        alignItems: 'center'
-      }}>
-        <View style={{
-          width: 100,
-          height: 100,
-          borderRadius: 50,
-          backgroundColor: '#ffffff',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 16
-        }}>
-          <Text style={{fontSize: 40, color: '#3b82f6'}}>
-            {profile.name.split(' ').map(n => n[0]).join('')}
-          </Text>
-        </View>
-        <Text style={{fontSize: 24, fontWeight: 'bold', color: '#ffffff', marginBottom: 4}}>
-          {profile.name}
-        </Text>
-        <Text style={{fontSize: 16, color: '#dbeafe'}}>
-          {profile.title}
-        </Text>
-      </View>
+    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
+      <Text style={[styles.heading, { color: colors.text }]}>Profile</Text>
+      <View style={styles.content}>
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}> 
+          <View style={[styles.avatar, { backgroundColor: colors.primary, borderColor: colors.border }]}> 
+            <Text style={styles.avatarText}>👤</Text>
+          </View>
+          <Text style={[styles.name, { color: colors.text }]}>{user.name}</Text>
+          {user.role && (
+            <Text style={[styles.subtitle, { color: colors.muted }]}>{user.role}</Text>
+          )}
 
-      {/* Profile Info Card */}
-      <View style={{
-        marginTop: -50,
-        marginHorizontal: 16,
-        backgroundColor: '#ffffff',
-        borderRadius: 20,
-        padding: 24,
-        borderWidth: 1,
-        borderColor: '#e5e7eb',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 3
-      }}>
-        {/* Edit Button */}
-        <View style={{alignItems: 'flex-end', marginBottom: 20}}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setIsEditing(!isEditing)}
-            style={{
-              backgroundColor: isEditing ? '#10b981' : '#3b82f6',
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              borderRadius: 20,
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}
-          >
-            <Ionicons 
-              name={isEditing ? 'checkmark' : 'pencil'} 
-              size={18} 
-              color="#ffffff" 
-              style={{marginRight: 8}} 
-            />
-            <Text style={{color: '#ffffff', fontSize: 14, fontWeight: '600'}}>
-              {isEditing ? 'Save' : 'Edit'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <ProfileField
-          icon="person-outline"
-          label="Full Name"
-          value={profile.name}
-          onChangeText={(text: string) => setProfile({...profile, name: text})}
-        />
-
-        <ProfileField
-          icon="mail-outline"
-          label="Email"
-          value={profile.email}
-          onChangeText={(text: string) => setProfile({...profile, email: text})}
-        />
-
-        <ProfileField
-          icon="call-outline"
-          label="Phone"
-          value={profile.phone}
-          onChangeText={(text: string) => setProfile({...profile, phone: text})}
-        />
-
-        <ProfileField
-          icon="location-outline"
-          label="Location"
-          value={profile.location}
-          onChangeText={(text: string) => setProfile({...profile, location: text})}
-        />
-
-        <ProfileField
-          icon="briefcase-outline"
-          label="Job Title"
-          value={profile.title}
-          onChangeText={(text: string) => setProfile({...profile, title: text})}
-        />
-
-        <View style={{marginBottom: 20}}>
-          <Text style={{fontSize: 14, fontWeight: '600', color: '#6b7280', marginBottom: 8}}>
-            Bio
-          </Text>
-          <View style={{
-            backgroundColor: isEditing ? '#ffffff' : '#f9fafb',
-            padding: 16,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: isEditing ? '#3b82f6' : '#e5e7eb'
-          }}>
-            {isEditing ? (
-              <TextInput
-                style={{fontSize: 16, color: '#111827', minHeight: 80, textAlignVertical: 'top'}}
-                value={profile.bio}
-                onChangeText={(text) => setProfile({...profile, bio: text})}
-                placeholder="Tell us about yourself"
-                multiline
-                numberOfLines={4}
-              />
-            ) : (
-              <Text style={{fontSize: 16, color: '#111827', lineHeight: 24}}>
-                {profile.bio || 'Not set'}
-              </Text>
+          <View style={styles.rows}>
+            <View style={styles.row}>
+              <Ionicons name="mail-outline" size={20} color={colors.muted} />
+              <Text style={[styles.rowText, { color: colors.text }]}>{user.email}</Text>
+            </View>
+            {user.location && (
+              <View style={styles.row}>
+                <Ionicons name="location-outline" size={20} color={colors.muted} />
+                <Text style={[styles.rowText, { color: colors.text }]}>{user.location}</Text>
+              </View>
             )}
           </View>
+
+          {user.bio && (
+            <View style={[styles.bioBox, { borderColor: colors.border }]}> 
+              <Text style={[styles.bioText, { color: colors.text }]}>{user.bio}</Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={[styles.toggleBtn, { backgroundColor: colors.primary }]}
+            onPress={() => dispatch(toggleTheme())}
+            activeOpacity={0.9}
+          >
+            <Ionicons name={themeMode === 'light' ? 'moon' : 'sunny'} size={18} color="#ffffff" />
+            <Text style={[styles.toggleText]}>Switch to {themeMode === 'light' ? 'Dark' : 'Light'} Mode</Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      {/* Settings Section */}
-      <View style={{padding: 16, marginTop: 20}}>
-        <Text style={{fontSize: 18, fontWeight: '600', color: '#111827', marginBottom: 16}}>
-          Settings
-        </Text>
-        
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={{
-            backgroundColor: '#ffffff',
-            padding: 16,
-            borderRadius: 12,
-            marginBottom: 12,
-            borderWidth: 1,
-            borderColor: '#e5e7eb',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="notifications-outline" size={24} color="#6b7280" />
-            <Text style={{fontSize: 16, color: '#111827', marginLeft: 12}}>
-              Notifications
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={{
-            backgroundColor: '#ffffff',
-            padding: 16,
-            borderRadius: 12,
-            marginBottom: 12,
-            borderWidth: 1,
-            borderColor: '#e5e7eb',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="document-text-outline" size={24} color="#6b7280" />
-            <Text style={{fontSize: 16, color: '#111827', marginLeft: 12}}>
-              Resume
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={{
-            backgroundColor: '#ffffff',
-            padding: 16,
-            borderRadius: 12,
-            marginBottom: 32,
-            borderWidth: 1,
-            borderColor: '#e5e7eb',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="settings-outline" size={24} color="#6b7280" />
-            <Text style={{fontSize: 16, color: '#111827', marginLeft: 12}}>
-              Preferences
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={{
-            backgroundColor: '#fee2e2',
-            padding: 16,
-            borderRadius: 12,
-            marginBottom: 40,
-            borderWidth: 1,
-            borderColor: '#fecaca',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Ionicons name="log-out-outline" size={24} color="#dc2626" />
-          <Text style={{fontSize: 16, color: '#dc2626', fontWeight: '600', marginLeft: 12}}>
-            Logout
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    padding: 16,
+    paddingTop: 24,
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 520,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
+  avatar: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  avatarText: {
+    fontSize: 40,
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  rows: {
+    width: '100%',
+    marginTop: 14,
+    gap: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  rowText: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  bioBox: {
+    width: '100%',
+    marginTop: 14,
+    padding: 12,
+    borderWidth: 1,
+    borderRadius: 12,
+  },
+  bioText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  toggleBtn: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 999,
+  },
+  toggleText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+});

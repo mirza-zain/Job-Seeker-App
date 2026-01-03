@@ -1,5 +1,5 @@
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function About() {
   return (
@@ -93,10 +93,7 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 15,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
+    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.08)',
     elevation: 3,
   },
   sectionTitle: {

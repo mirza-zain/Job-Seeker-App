@@ -1,17 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useAppSelector } from '../../state/store';
 
-export default function TabLayout() {
+export default function TabsLayout() {
+  const mode = useAppSelector((s) => s.theme.mode);
+  const colors = mode === 'dark'
+    ? { card: '#111827', primary: '#60a5fa', border: '#374151' }
+    : { card: '#ffffff', primary: '#3b82f6', border: '#e5e7eb' };
+  const inactive = mode === 'dark' ? '#9ca3af' : '#6b7280';
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3b82f6',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: inactive,
         tabBarStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: colors.card,
           borderTopWidth: 1,
-          borderTopColor: '#e5e7eb',
+          borderTopColor: colors.border,
           paddingBottom: 8,
           paddingTop: 8,
           height: 60,
@@ -25,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: '💼 Job Seeker',
+          title: 'Home',
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
@@ -52,6 +58,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* Hide detail route from tab bar */}
       <Tabs.Screen
         name="job-detail"
         options={{
@@ -59,11 +66,12 @@ export default function TabLayout() {
           title: 'Job Details',
         }}
       />
+      {/* Hide apply route from tab bar */}
       <Tabs.Screen
-        name="application-form"
+        name="apply"
         options={{
           href: null,
-          title: 'Application Form',
+          title: 'Apply',
         }}
       />
     </Tabs>
