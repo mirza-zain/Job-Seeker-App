@@ -1,8 +1,10 @@
+import { Ionicons } from "@expo/vector-icons"
 import { useQuery } from "@tanstack/react-query"
 import { router } from "expo-router"
 import { useMemo } from "react"
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { useAppliedJobs } from "../../hooks/useAppliedJobs"
 import { getThemeColors } from "../../lib/theme"
 import { useAppSelector } from "../../state/store"
 
@@ -13,6 +15,7 @@ export default function Home() {
         queryKey: ["job"],
         queryFn: () => fetch("https://jsonfakery.com/jobs").then(res => res.json()),
     })
+    const { data: appliedJobs = [] } = useAppliedJobs()
 
     if(isLoading) return (
         <View style={[styles.centerContainer, { backgroundColor: palette.background }]}>
@@ -31,6 +34,10 @@ export default function Home() {
         return jobs
     }, [data])
 
+    const isJobApplied = (jobId: string) => {
+        return appliedJobs.some(app => app.jobId === jobId)
+    }
+
     return (
         <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
         <Text style={[styles.heading, { color: palette.heading }]}>Explore Jobs</Text>
@@ -48,8 +55,18 @@ export default function Home() {
                 style={[styles.jobCard, { backgroundColor: palette.card, borderColor: palette.border }]}
             >
                 <View style={styles.cardHeader}>
-                    <Text style={[styles.jobTitle, { color: palette.text }]}>{item.title}</Text>
-                    <Text style={styles.salary}>${item.salary_from?.toLocaleString()}</Text>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.jobTitle, { color: palette.text }]}>{item.title}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={styles.salary}>${item.salary_from?.toLocaleString()}</Text>
+                        {isJobApplied(item.id) && (
+                            <View style={[styles.appliedBadge, { backgroundColor: 'rgba(16, 185, 129, 0.12)' }]}>
+                                <Ionicons name="checkmark-circle" size={14} color="#10b981" />
+                                <Text style={[styles.appliedText]}>Applied</Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
                 
                 <Text style={[styles.company, { color: palette.mutedText }]}>{item.company}</Text>
@@ -102,7 +119,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 8
+        marginBottom: 8,
+        gap: 8
     },
     jobTitle: {
         fontSize: 18,
@@ -113,7 +131,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#10b981',
-        marginLeft: 8
+    },
+    appliedBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
+        marginTop: 4
+    },
+    appliedText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#10b981'
     },
     company: {
         fontSize: 14,

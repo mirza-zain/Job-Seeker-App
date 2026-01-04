@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useApplyToJob } from '../../hooks/useAppliedJobs';
+import { useApplyToJob, useAppliedJobs } from '../../hooks/useAppliedJobs';
 import { getThemeColors } from '../../lib/theme';
 import { useAppSelector } from '../../state/store';
 
@@ -16,6 +16,7 @@ export default function ApplyScreen() {
   const user = useAppSelector((s) => s.user);
   const themeMode = useAppSelector((s) => s.theme.mode);
   const palette = getThemeColors(themeMode);
+  const { data: appliedJobs = [] } = useAppliedJobs();
 
   const [name, setName] = useState(user.name || '');
   const [email, setEmail] = useState(user.email || '');
@@ -24,6 +25,7 @@ export default function ApplyScreen() {
   const [error, setError] = useState<string | null>(null);
   const applyMutation = useApplyToJob();
   const placeholderColor = themeMode === 'dark' ? '#CED3DA' : palette.mutedText;
+  const isApplied = parsedJob ? appliedJobs.some(app => app.jobId === `${parsedJob.id}`) : false;
 
   if (!parsedJob) {
     return (
@@ -80,6 +82,9 @@ export default function ApplyScreen() {
           placeholderTextColor={placeholderColor}
         />
 
+        {isApplied ? (
+          <Text style={[styles.error, { color: '#10b981' }]}>You already applied to this job.</Text>
+        ) : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <View style={styles.actions}>
@@ -87,8 +92,10 @@ export default function ApplyScreen() {
             <Text style={[styles.cancelText, { color: palette.text }]}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.submitBtn, { backgroundColor: palette.primary }]}
+            style={[styles.submitBtn, { backgroundColor: isApplied ? palette.border : palette.primary }]}
+            disabled={isApplied || applyMutation.isPending}
             onPress={async () => {
+              if (isApplied) return;
               if (!name.trim() || !email.trim()) {
                 setError('Name and email are required');
                 return;
@@ -105,7 +112,9 @@ export default function ApplyScreen() {
             }}
             activeOpacity={0.9}
           >
-            <Text style={styles.submitText}>Submit Application</Text>
+            <Text style={[styles.submitText, { color: isApplied ? palette.mutedText : '#ffffff' }]}>
+              {isApplied ? 'Already Applied' : 'Submit Application'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

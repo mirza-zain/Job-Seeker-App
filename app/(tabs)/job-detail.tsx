@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAppliedJobs } from '../../hooks/useAppliedJobs';
 import { getThemeColors } from '../../lib/theme';
 import { useAppSelector } from '../../state/store';
 
@@ -11,11 +12,13 @@ export const options = {
 export default function JobDetail() {
   const { job } = useLocalSearchParams();
   const parsedJob = job ? JSON.parse(String(job)) : null;
+  const { data: appliedJobs = [] } = useAppliedJobs();
   const mode = useAppSelector((s) => s.theme.mode);
   const palette = getThemeColors(mode);
   const successBg = mode === 'dark' ? 'rgba(34,197,94,0.15)' : '#f0fdf4';
   const successBorder = mode === 'dark' ? 'rgba(34,197,94,0.30)' : '#bbf7d0';
   const successText = mode === 'dark' ? '#86efac' : '#15803d';
+  const isApplied = parsedJob ? appliedJobs.some(app => app.jobId === `${parsedJob.id}`) : false;
 
   if (!parsedJob) {
     return (
@@ -56,6 +59,14 @@ export default function JobDetail() {
         </View>
       </View>
 
+      {isApplied && (
+        <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }]}>
+          <View style={[styles.appliedBanner, { backgroundColor: 'rgba(16, 185, 129, 0.12)', borderColor: 'rgba(16, 185, 129, 0.35)' }]}>
+            <Text style={[styles.appliedBannerText, { color: '#10b981' }]}>You already applied to this job.</Text>
+          </View>
+        </View>
+      )}
+
       {/* Description Card */}
       <View style={[styles.card, { backgroundColor: palette.card, borderColor: palette.border }]}>
         <Text style={[styles.sectionHeading, { color: palette.heading }]}>Description</Text>
@@ -63,8 +74,17 @@ export default function JobDetail() {
       </View>
 
       {/* Apply CTA */}
-      <TouchableOpacity style={[styles.applyButton, { backgroundColor: palette.primary }]} onPress={() => router.push({ pathname: '/(tabs)/apply', params: { job: JSON.stringify(parsedJob) } })}>
-        <Text style={styles.applyText}>Apply</Text>
+      <TouchableOpacity
+        style={[styles.applyButton, { backgroundColor: isApplied ? palette.border : palette.primary }]}
+        disabled={isApplied}
+        onPress={() => {
+          if (isApplied) return;
+          router.push({ pathname: '/(tabs)/apply', params: { job: JSON.stringify(parsedJob) } });
+        }}
+      >
+        <Text style={[styles.applyText, { color: isApplied ? palette.mutedText : '#fff' }]}>
+          {isApplied ? 'Already Applied' : 'Apply'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
     </SafeAreaView>
@@ -164,6 +184,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#15803d',
+  },
+  appliedBanner: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+  },
+  appliedBannerText: {
+    fontSize: 14,
+    fontWeight: '700',
   },
   applyButton: {
     marginTop: 24,

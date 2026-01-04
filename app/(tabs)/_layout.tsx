@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getThemeColors } from '../../lib/theme';
 import { useAppSelector } from '../../state/store';
 
@@ -7,6 +8,8 @@ export default function TabsLayout() {
   const mode = useAppSelector((s) => s.theme.mode);
   const palette = getThemeColors(mode);
   const inactive = palette.mutedText;
+  const insets = useSafeAreaInsets();
+  const bottomInset = Math.max(insets.bottom, 0);
   return (
     <Tabs
       screenOptions={{
@@ -17,12 +20,10 @@ export default function TabsLayout() {
           backgroundColor: palette.card,
           borderTopWidth: 1,
           borderTopColor: palette.border,
-          paddingBottom: 8,
+          // Lift the tab bar above system nav/home indicator when present
+          paddingBottom: Math.max(bottomInset, 8),
           paddingTop: 8,
-          height: 60,
-        },
-        sceneContainerStyle: {
-          backgroundColor: palette.background,
+          height: 60 + bottomInset,
         },
         tabBarLabelStyle: {
           fontSize: 12,
