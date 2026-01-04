@@ -1,50 +1,127 @@
-# Welcome to your Expo app 👋
+# Job Seeker App 🔍
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern mobile application built with React Native and Expo for managing job applications and tracking your job search journey.
 
-## Get started
+## Features ✨
 
-1. Install dependencies
+- **Job Listings**: Browse and search through available job opportunities
+- **Job Applications**: Track all jobs you've applied to
+- **Application Management**: Apply to jobs directly through the app
+- **Job Details**: View comprehensive information about each job posting
+- **User Profile**: Manage your profile and edit personal information
+- **Theme Support**: Light and dark mode support with Redux state management
+- **Persistent Storage**: Local data storage using AsyncStorage
+
+## Tech Stack 🛠️
+
+- **Framework**: React Native with Expo (~54.0.30)
+- **Routing**: Expo Router (~6.0.21) for file-based navigation
+- **State Management**: Redux Toolkit (~2.11.2) with React Redux (~9.2.0)
+- **Data Fetching**: TanStack React Query (~5.90.16)
+- **UI Components**: React Navigation with bottom tabs and drawer navigation
+- **Storage**: AsyncStorage for persistent local data
+- **TypeScript**: Full TypeScript support for type safety
+
+## Project Structure 📁
+
+```
+app/
+  ├── (tabs)/           # Tab-based screens
+  │   ├── index.tsx     # Home/Jobs listing
+  │   ├── apply.tsx     # Job application screen
+  │   ├── applied.tsx   # Applied jobs list
+  │   ├── job-detail.tsx # Job details
+  │   └── profile.tsx   # User profile
+  ├── edit-profile.tsx  # Profile editing screen
+  └── _layout.tsx       # Root layout with providers
+state/
+  ├── store.ts          # Redux store configuration
+  ├── themeSlice.ts     # Theme state management
+  └── userSlice.ts      # User state management
+lib/
+  ├── storage.ts        # AsyncStorage utilities
+  └── theme.ts          # Theme configuration
+hooks/
+  └── useAppliedJobs.ts # Custom hooks for job data
+```
+
+## Getting Started 🚀
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- Expo CLI
+- Android Studio (for Android development) or Xcode (for iOS development)
+
+### Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/mirza-zain/Job-Seeker-App.git
+   cd job-management
+   ```
+
+2. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Start the development server
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Run the app
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   - Press `a` for Android emulator
+   - Press `i` for iOS simulator
+   - Scan QR code with Expo Go app on your physical device
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Available Scripts 📜
 
-## Get a fresh project
+- `npm start` - Start the Expo development server
+- `npm run android` - Run on Android emulator/device
+- `npm run ios` - Run on iOS simulator/device
+- `npm run web` - Run in web browser
+- `npm run lint` - Run ESLint for code quality
 
-When you're ready, run:
+## Features in Detail 📋
 
-```bash
-npm run reset-project
-```
+### Job Management
+- View all available job listings on the home screen
+- Browse job details including requirements, salary, and company information
+- Apply to jobs with a single tap
+- Track application status and history
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Profile Management
+- View and edit user profile information
+- Update personal details including name, email, phone, and location
+- Change profile picture
+- Manage account settings
 
-## Learn more
+### Theme Customization
+- Toggle between light and dark themes
+- Persistent theme preference across app sessions
+- Smooth theme transitions
 
-To learn more about developing your project with Expo, look at the following resources:
+## State Management 🔄
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+The app uses Redux Toolkit for centralized state management:
+- **Theme Slice**: Manages app theme (light/dark mode)
+- **User Slice**: Handles user profile data and authentication state
 
-## Join the community
+## Contributing 🤝
 
-Join our community of developers creating universal apps.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## License 📄
+
+This project is open source and available under the MIT License.
+
+## Contact 📧
+
+For questions or support, please open an issue on GitHub.
