@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useApplyToJob, useAppliedJobs } from '../../hooks/useAppliedJobs';
+import { useAppliedJobs, useApplyToJob } from '../../hooks/useAppliedJobs';
 import { getThemeColors } from '../../lib/theme';
 import { useAppSelector } from '../../state/store';
 
