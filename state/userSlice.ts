@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
   name: string;
@@ -20,7 +20,17 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    updateProfile: (state, action: PayloadAction<{ name?: string; bio?: string }>) => {
+      if (action.payload.name !== undefined) {
+        state.name = action.payload.name;
+      }
+      if (action.payload.bio !== undefined) {
+        state.bio = action.payload.bio;
+      }
+    },
+  },
 });
 
+export const { updateProfile } = userSlice.actions;
 export default userSlice.reducer;

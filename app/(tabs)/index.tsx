@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useQuery } from "@tanstack/react-query"
 import { router } from "expo-router"
-import { useMemo } from "react"
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useState, useMemo } from "react"
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useAppliedJobs } from "../../hooks/useAppliedJobs"
 import { getThemeColors } from "../../lib/theme"
@@ -11,6 +11,8 @@ import { useAppSelector } from "../../state/store"
 export default function Home() {
     const mode = useAppSelector((s) => s.theme.mode)
     const palette = getThemeColors(mode)
+    const [searchQuery, setSearchQuery] = useState("")
+    
     const {data, isLoading, error} = useQuery({
         queryKey: ["job"],
         queryFn: () => fetch("https://jsonfakery.com/jobs").then(res => res.json()),
@@ -31,8 +33,19 @@ export default function Home() {
     const filteredJobs = useMemo(() => {
         if(!data) return []
         let jobs = [...data].sort(() => Math.random() - 0.5).slice(0, 10)
+        
+        // Filter by search query using regex for flexible matching
+        if(searchQuery.trim()) {
+            const query = searchQuery.trim()
+            // Create regex pattern that matches any occurrence, case-insensitive
+            const regex = new RegExp(query.split('').join('.*'), 'i')
+            jobs = jobs.filter((job: any) => 
+                job.title && regex.test(job.title)
+            )
+        }
+        
         return jobs
-    }, [data])
+    }, [data, searchQuery])
 
     const isJobApplied = (jobId: string) => {
         return appliedJobs.some(app => app.jobId === jobId)
@@ -41,6 +54,24 @@ export default function Home() {
     return (
         <SafeAreaView style={[styles.screen, { backgroundColor: palette.background }]} edges={["top"]}>
         <Text style={[styles.heading, { color: palette.heading }]}>Explore Jobs</Text>
+        
+        {/* Search Input */}
+        <View style={[styles.searchContainer, { backgroundColor: palette.card, borderColor: palette.border }]}>
+            <Ionicons name="search-outline" size={20} color={palette.mutedText} />
+            <TextInput
+                style={[styles.searchInput, { color: palette.text }]}
+                placeholder="Search by job title..."
+                placeholderTextColor={palette.mutedText}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery("")}>
+                    <Ionicons name="close-circle" size={20} color={palette.mutedText} />
+                </TouchableOpacity>
+            )}
+        </View>
+        
         <FlatList 
             data={filteredJobs}
             keyExtractor={item => item.id}
@@ -79,6 +110,12 @@ export default function Home() {
             }
             ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: palette.border }]} />}
             contentContainerStyle={styles.listContent}
+            ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                    <Ionicons name="search-outline" size={48} color={palette.mutedText} />
+                    <Text style={[styles.emptyText, { color: palette.mutedText }]}>No jobs found matching "{searchQuery}"</Text>
+                </View>
+            }
                 />
         </SafeAreaView>
   )
@@ -108,6 +145,21 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         marginBottom: 16
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderRadius: 12,
+        borderWidth: 1,
+        marginBottom: 16,
+        gap: 8
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 15,
+        paddingVertical: 2
     },
     jobCard: {
         borderRadius: 12,
@@ -174,5 +226,15 @@ const styles = StyleSheet.create({
     },
     listContent: {
         paddingBottom: 20
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 40
+    },
+    emptyText: {
+        fontSize: 16,
+        marginTop: 12,
+        textAlign: 'center'
     }
 })

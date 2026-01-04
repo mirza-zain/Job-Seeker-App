@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../state/store';
@@ -14,7 +15,17 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top"]}>
-      <Text style={[styles.heading, { color: colors.text }]}>Profile</Text>
+      <View style={styles.header}>
+        <Text style={[styles.heading, { color: colors.text }]}>Profile</Text>
+        <TouchableOpacity 
+          style={[styles.editButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+          onPress={() => router.push('/edit-profile')}
+        >
+          <Ionicons name="create-outline" size={18} color={colors.primary} />
+          <Text style={[styles.editButtonText, { color: colors.primary }]}>Edit</Text>
+        </TouchableOpacity>
+      </View>
+      
       <View style={styles.content}>
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}> 
           <View style={[styles.avatar, { backgroundColor: colors.primary, borderColor: colors.border }]}> 
@@ -64,10 +75,28 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 24,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   heading: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 16,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  editButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   content: {
     flex: 1,
